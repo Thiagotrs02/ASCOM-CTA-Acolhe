@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASCOM CTA Acolhe - Protótipo MVP</title>
+    <style>
+        :root {
+            --primary: #1a56db;
+            --primary-hover: #1e429f;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text: #1f2937;
+            --border: #d1d5db;
+            --focus: #facc15;
+            --success: #057a55;
+            --danger: #e02424;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.5; }
+
+        .proto-nav {
+            background: #1e293b; color: white; padding: 10px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .proto-nav button {
+            background: #334155; color: white; border: 1px solid #475569;
+            padding: 6px 12px; margin-left: 5px; border-radius: 4px; cursor: pointer;
+        }
+        .proto-nav button.active { background: var(--primary); border-color: var(--primary); }
+
+        .container {
+            max-width: 900px; margin: 30px auto; background: var(--card-bg);
+            border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            overflow: hidden; border: 1px solid var(--border);
+        }
+
+        header {
+            background: var(--primary); color: white; padding: 15px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .content { padding: 25px; }
+
+        label { display: block; font-weight: 600; margin-bottom: 6px; }
+        input, select {
+            width: 100%; padding: 12px; border: 2px solid var(--border);
+            border-radius: 6px; margin-bottom: 18px; font-size: 1rem;
+        }
+        input:focus, select:focus, button:focus { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+        .btn {
+            background: var(--primary); color: white; border: none; padding: 12px 24px;
+            font-size: 1rem; font-weight: bold; border-radius: 6px; cursor: pointer;
+            min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; justify-content: center;
+        }
+        .btn:hover { background: var(--primary-hover); }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: #f8fafc; }
+
+        .grid-leitos {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px; margin-top: 15px;
+        }
+        .leito-card {
+            border: 2px solid var(--border); border-radius: 6px; padding: 15px;
+            text-align: center; cursor: pointer; min-height: 60px; font-weight: bold;
+        }
+        .leito-card.livre { border-color: var(--success); background: #f0fdf4; color: var(--success); }
+        .leito-card.ocupado { border-color: var(--danger); background: #fdf2f2; color: var(--danger); cursor: not-allowed; opacity: 0.6; }
+        .leito-card.selecionado { outline: 3px solid var(--focus); background: #fef9c3; }
+
+        .alert {
+            padding: 15px; border-radius: 6px; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 10px; font-weight: 500;
+        }
+        .alert-success { background: #def7ec; color: #03543f; border: 1px solid #84e1bc; }
+        .alert-warning { background: #feecdc; color: #8a2c0d; border: 1px solid #fbd5d5; }
+
+        .screen { display: none; }
+        .screen.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="proto-nav">
+        <span><strong>ASCOM CTA ACOLHE - PROTÓTIPO MVP</strong></span>
+        <div>
+            <button onclick="showScreen('screen1')" id="btn-s1" class="active">Tela 1: Login</button>
+            <button onclick="showScreen('screen2')" id="btn-s2">Tela 2: Triagem/Busca</button>
+            <button onclick="showScreen('screen3')" id="btn-s3">Tela 3: Acolhimento/Leito</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div>
+                <h2>ASCOM - Sistema CTA</h2>
+                <small>Centro Temporário de Acolhimento São Mateus</small>
+            </div>
+            <div id="user-info" style="display:none; text-align:right;">
+                <span>Op: <strong>Maria Helena Souza</strong></span><br>
+                <small>Perfil: Educadora Social</small>
+            </div>
+        </header>
+
+        <div class="content">
+            <!-- TELA 1: LOGIN -->
+            <div id="screen1" class="screen active">
+                <h3 style="margin-bottom: 20px;">Acesso ao Sistema de Acolhimento</h3>
+                <div class="alert alert-warning">
+                    <span>⚠️</span>
+                    <span>Acesso restrito a educadores sociais e operadores autorizados da ASCOM.</span>
+                </div>
+                <form onsubmit="event.preventDefault(); showScreen('screen2');">
+                    <label for="usuario">Utilizador / E-mail</label>
+                    <input type="email" id="usuario" value="operador.cta@ascom.org.br" required autofocus>
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" value="••••••••••••" required>
+                    <button type="submit" class="btn" style="width: 100%;">ENTRAR NO SISTEMA</button>
+                </form>
+            </div>
+
+            <!-- TELA 2: BUSCA ANTIDUPLICAÇÃO -->
+            <div id="screen2" class="screen">
+                <h3 style="margin-bottom: 15px;">Triagem e Busca Antiduplicação</h3>
+                <form onsubmit="event.preventDefault(); showScreen('screen3');">
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px;">
+                        <div>
+                            <label for="nome_busca">Nome Completo (ou aproximado)</label>
+                            <input type="text" id="nome_busca" value="Joao da Silva" placeholder="Digite o nome trazido pelo SEAS..." required>
+                        </div>
+                        <div>
+                            <label for="data_nasc">Data de Nascimento</label>
+                            <input type="date" id="data_nasc" value="1985-05-14">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">🔍 PESQUISAR ASSISTIDO (RAPIDFUZZ)</button>
+                </form>
+
+                <div id="search-results" style="margin-top: 25px;">
+                    <div class="alert alert-warning">
+                        <span>⚡</span>
+                        <span><strong>2 possíveis cadastros encontrados</strong> com alta similaridade fonética para evitar duplicação.</span>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Prontuário</th>
+                                <th>Nome Registado</th>
+                                <th>Data Nasc.</th>
+                                <th>Similaridade</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background: #fefce8;">
+                                <td>#4082</td>
+                                <td><strong>João da Silva Santos</strong></td>
+                                <td>14/05/1985</td>
+                                <td><span style="color:var(--success); font-weight:bold;">92% (Compatível)</span></td>
+                                <td><button class="btn" onclick="showScreen('screen3')" style="padding: 6px 12px;">Selecionar</button></td>
+                            </tr>
+                            <tr>
+                                <td>#1209</td>
+                                <td>João da Silva Junior</td>
+                                <td>20/11/1990</td>
+                                <td>68%</td>
+                                <td><button class="btn" onclick="showScreen('screen3')" style="padding: 6px 12px; background:#64748b;">Selecionar</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TELA 3: ALOCAÇÃO DE LEITO -->
+            <div id="screen3" class="screen">
+                <h3 style="margin-bottom: 15px;">Alocação de Leito e Acolhimento Noturno</h3>
+                <div style="background: #f8fafc; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid var(--border);">
+                    <p><strong>Assistido Selecionado:</strong> João da Silva Santos (Prontuário #4082)</p>
+                    <p><strong>Data de Nascimento:</strong> 14/05/1985 | <strong>Origem:</strong> Abordagem SEAS</p>
+                </div>
+
+                <label>Selecione um Leito Livre para Hoje (Ala Masculina):</label>
+                <div class="grid-leitos">
+                    <div class="leito-card ocupado">L-01<br><small>Ocupado</small></div>
+                    <div class="leito-card ocupado">L-02<br><small>Ocupado</small></div>
+                    <div class="leito-card livre selecionado" tabindex="0" aria-label="Leito 03 - Livre">L-03<br><small>Livre</small></div>
+                    <div class="leito-card livre" tabindex="0" aria-label="Leito 04 - Livre">L-04<br><small>Livre</small></div>
+                    <div class="leito-card livre" tabindex="0" aria-label="Leito 05 - Livre">L-05<br><small>Livre</small></div>
+                    <div class="leito-card livre" tabindex="0" aria-label="Leito 06 - Livre">L-06<br><small>Livre</small></div>
+                </div>
+
+                <div id="confirm-box" style="margin-top: 25px;">
+                    <div class="alert alert-success">
+                        <span>✓</span>
+                        <span><strong>Leito L-03 selecionado!</strong> Clique abaixo para confirmar a entrada.</span>
+                    </div>
+                    <button class="btn" onclick="alert('Acolhimento registado com sucesso no banco de dados!'); showScreen('screen2');" style="width: 100%; background: var(--success);">
+                        CONFIRMAR ACOLHIMENTO E LEITO L-03
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.proto-nav button').forEach(b => b.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            
+            if(screenId === 'screen1') {
+                document.getElementById('btn-s1').classList.add('active');
+                document.getElementById('user-info').style.display = 'none';
+            } else if(screenId === 'screen2') {
+                document.getElementById('btn-s2').classList.add('active');
+                document.getElementById('user-info').style.display = 'block';
+            } else if(screenId === 'screen3') {
+                document.getElementById('btn-s3').classList.add('active');
+                document.getElementById('user-info').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
