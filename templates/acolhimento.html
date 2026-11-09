@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASCOM CTA Acolhe - Efetivação de Acolhimento</title>
+    <style>
+        :root {
+            --primary: #1a56db;
+            --primary-hover: #1e429f;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text: #1f2937;
+            --border: #d1d5db;
+            --success: #057a55;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.5; transition: background-color 0.3s, color 0.3s; }
+
+        .proto-nav {
+            background: #1e293b; color: white; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .proto-nav button, .proto-nav a {
+            background: #334155; color: white; border: 1px solid #475569;
+            padding: 6px 12px; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 0.9rem;
+        }
+
+        .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+        .card { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 24px; }
+        .card-header { margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .info-box { background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid var(--border); }
+
+        .btn-success { background-color: var(--success); color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-size: 1rem; font-weight: bold; width: 100%; text-align: center; }
+
+        /* Alto Contraste */
+        body.alto-contraste { background-color: #000000 !important; color: #ffffff !important; }
+        body.alto-contraste .proto-nav { background-color: #000000 !important; border-bottom: 2px solid #ffff00 !important; }
+        body.alto-contraste .card, body.alto-contraste .info-box { background-color: #000000 !important; border: 2px solid #ffffff !important; color: #ffffff !important; }
+        body.alto-contraste button, body.alto-contraste .btn-success, body.alto-contraste a { background-color: #000000 !important; color: #ffff00 !important; border: 2px solid #ffff00 !important; font-weight: bold !important; }
+    </style>
+</head>
+<body>
+
+    <nav class="proto-nav" aria-label="Navegação Principal">
+        <div><strong>ASCOM CTA Acolhe</strong> — Regulação de Leitos Noturnos</div>
+        <div>
+            <a href="/triagem" style="margin-right: 8px;">← Voltar para Triagem</a>
+            <button type="button" id="btn-alto-contraste" aria-label="Alternar modo de alto contraste">
+                <span aria-hidden="true">🌓</span> Alto Contraste
+            </button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="card">
+            <div class="card-header">
+                <h2>Ficha de Acolhimento Noturno</h2>
+                <span style="color: var(--success); font-weight: bold;">Leito Reservado #14</span>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <strong>Assistido:</strong> João da Silva Santos<br>
+                    <strong>Prontuário:</strong> #402
+                </div>
+                <div class="info-box">
+                    <strong>Ala:</strong> Masculina A<br>
+                    <strong>Entrada:</strong> Hoje às 20:30
+                </div>
+            </div>
+
+            <form action="/triagem" method="GET">
+                <button type="submit" class="btn-success">✓ Confirmar Alocação de Leito e Finalizar Acolhimento</button>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        const btnContraste = document.getElementById('btn-alto-contraste');
+        if (localStorage.getItem('alto-contraste') === 'true') {
+            document.body.classList.add('alto-contraste');
+        }
+        btnContraste.addEventListener('click', () => {
+            document.body.classList.toggle('alto-contraste');
+            localStorage.setItem('alto-contraste', document.body.classList.contains('alto-contraste'));
+        });
+    </script>
+</body>
+</html>
